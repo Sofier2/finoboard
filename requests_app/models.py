@@ -1,0 +1,41 @@
+from django.db import models
+from django.contrib.auth.models import User
+
+
+class Request(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    votes = models.PositiveIntegerField(default=0)
+
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='requests'
+    )
+
+    # 🔥 ДОДАЄМО БЮДЖЕТ
+    budget = models.PositiveIntegerField(
+        null=True, 
+        blank=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} ({self.author})"
+
+
+class Vote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    request = models.ForeignKey(
+        Request,
+        on_delete=models.CASCADE,
+        related_name='vote_set'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'request')
+
+    def __str__(self):
+        return f"{self.user} → {self.request}"

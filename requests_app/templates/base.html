@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>FinoBoard</title>
+    <link rel="stylesheet" href="{% static 'css/css/style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'css/img/logo.png' %}">
+
+    <style>
+    body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background: radial-gradient(circle at top, #111827, #020617);
+        color: white;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 40px;
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* 🔥 ЛОГО як кнопка */
+    .logo {
+        font-size: 22px;
+        font-weight: 600;
+        text-decoration: none;
+        color: white;
+        transition: 0.3s;
+    }
+
+    .logo span {
+        color: #22c55e;
+    }
+
+    .logo:hover {
+        opacity: 0.8;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+    }
+
+    nav a {
+        margin-left: 20px;
+        text-decoration: none;
+        color: white;
+        transition: 0.3s;
+        font-size: 15px;
+    }
+
+    nav a:hover {
+        color: #22c55e;
+    }
+
+    .user {
+        margin-left: 20px;
+        color: #22c55e;
+        font-size: 14px;
+    }
+
+    .logout-btn {
+        margin-left: 15px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: #22c55e;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .logout-btn:hover {
+        opacity: 0.85;
+    }
+
+    .container {
+        padding: 20px 40px;
+    }
+
+    .footer {
+        text-align: center;
+        padding: 20px;
+        color: white;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 40px;
+    }
+    </style>
+
+</head>
+<body>
+
+<header class="header">
+
+    <!-- 🔗 ЛОГО = ПОСИЛАННЯ НА ГОЛОВНУ -->
+    <a href="{% url 'home' %}" class="logo">
+        Fino<span>Board</span>
+    </a>
+
+    <nav>
+        {% if user.is_authenticated %}
+    <a href="{% url 'my_requests' %}">Мої заявки</a>
+{% endif %}
+        <a href="{% url 'create' %}">Подати заявку</a>
+        <a href="{% url 'list' %}">Заявки</a>
+
+        {% if user.is_authenticated %}
+            <span class="user">{{ user.username }}</span>
+
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Вийти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Увійти</a>
+            <a href="{% url 'register' %}">Реєстрація</a>
+        {% endif %}
+    </nav>
+
+</header>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<footer class="footer">
+    <p>© 2026 FinoBoard | Всі права захищені</p>
+</footer>
+
+</body>
+</html>

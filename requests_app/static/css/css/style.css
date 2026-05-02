@@ -1,0 +1,104 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f5f7fb;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1e293b;
+    color: white;
+    padding: 15px 30px;
+}
+
+.header a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+.logo {
+    font-weight: bold;
+}
+
+/* CONTAINER */
+.container {
+    padding: 40px;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero h1 {
+    font-size: 40px;
+}
+
+.hero p {
+    max-width: 600px;
+    margin: auto;
+    color: #555;
+}
+
+.hero-buttons {
+    margin-top: 20px;
+}
+
+/* CARDS */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* REQUEST */
+.request-card {
+    transition: 0.3s;
+}
+
+.request-card:hover {
+    transform: translateY(-5px);
+}
+
+/* BUTTON */
+.btn {
+    background: #2563eb;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+}
+
+.btn.secondary {
+    background: gray;
+}
+
+/* FORM */
+.form input, .form textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* VOTES */
+.votes {
+    font-weight: bold;
+    color: #2563eb;
+}
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: #1e293b;
+    color: white;
+}

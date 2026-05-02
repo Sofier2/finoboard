@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+.auth-wrapper {
+    max-width: 420px;
+    margin: 80px auto;
+    padding: 35px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.auth-wrapper h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 28px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #ffffff; /* БІЛИЙ текст */
+    margin-bottom: 25px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form input {
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: white;
+    transition: 0.3s;
+}
+
+
+
+.form input:focus {
+    outline: none;
+    border: 1px solid #22c55e;
+    box-shadow: 0 0 10px rgba(34,197,94,0.3);
+}
+
+.btn {
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: #22c55e;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(34,197,94,0.3);
+}
+
+.extra {
+    text-align: center;
+    margin-top: 15px;
+    color: #ffffff; /* БІЛИЙ */
+    font-size: 14px;
+}
+
+.extra a {
+    color: #22c55e;
+    text-decoration: none;
+}
+</style>
+
+<div class="auth-wrapper">
+    <h1>Реєстрація у FinoBoard</h1>
+
+    <p class="subtitle">
+        Створіть акаунт, щоб подавати заявки та голосувати
+    </p>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+
+        <input type="text" name="username" placeholder="Логін" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password1" placeholder="Пароль" required>
+        <input type="password" name="password2" placeholder="Підтвердіть пароль" required>
+
+        <button class="btn">Зареєструватися</button>
+    </form>
+
+    <div class="extra">
+        Вже маєте акаунт? 
+        <a href="{% url 'login' %}">Увійти</a>
+    </div>
+</div>
+
+{% endblock %}

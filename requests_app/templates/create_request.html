@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+.form-wrapper {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 40px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.form-wrapper h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 32px;
+    color: white;
+}
+
+.subtitle {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form input,
+.form textarea {
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: white;
+}
+
+.form input:focus,
+.form textarea:focus {
+    outline: none;
+    border: 1px solid #22c55e;
+}
+
+.form textarea {
+    min-height: 120px;
+}
+
+.btn {
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: #22c55e;
+    color: white;
+    cursor: pointer;
+}
+
+</style>
+
+<div class="form-wrapper">
+    <h1>Подати нову заявку</h1>
+
+    <p class="subtitle">
+        Опишіть вашу ідею, яка може покращити місто або країну.
+    </p>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+
+        <input type="text" name="title" placeholder="Назва проєкту" required>
+
+        <textarea name="description" placeholder="Детальний опис ідеї..." required></textarea>
+
+        <button type="submit" class="btn">Подати заявку</button>
+    </form>
+</div>
+
+{% endblock %}

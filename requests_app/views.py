@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .models import Request, Vote
-
+from django.contrib.auth.forms import AuthenticationForm
 
 # 🔹 ГОЛОВНА
 def home(request):
@@ -104,23 +104,21 @@ def register(request):
 
     return render(request, 'register.html')
 
-
 # 🔹 ЛОГІН
+
 def login_view(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user = authenticate(
-            username=username,
-            password=password
-        )
-
-        if user:
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
             return redirect('home')
 
-    return render(request, 'login.html')
+    return render(request, 'login.html', {
+        'form': form
+    })
+
 
 
 # 🔹 ЛОГАУТ

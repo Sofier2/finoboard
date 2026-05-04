@@ -154,3 +154,23 @@ def supervisor_dashboard(request):
 # 🔐 перевірка адміна
 def user_is_admin(user):
     return user.is_superuser
+
+
+@login_required
+def edit_request(request, id):
+    req = get_object_or_404(Request, id=id)
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    if request.method == 'POST':
+        req.title = request.POST.get('title')
+        req.description = request.POST.get('description')
+        req.budget = request.POST.get('budget')
+
+        req.save()
+        return redirect('admin_dashboard')
+
+    return render(request, 'edit_request.html', {
+        'req': req
+    })

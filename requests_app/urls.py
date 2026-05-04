@@ -18,4 +18,5 @@ urlpatterns = [
     # 🔴 ДОДАЙ ОЦЕ
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('supervisor-dashboard/', views.supervisor_dashboard, name='supervisor_dashboard'),
+    path('edit/<int:id>/', views.edit_request, name='edit_request'),
 ]

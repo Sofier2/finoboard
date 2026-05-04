@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .models import Request, Vote
 from django.contrib.auth.forms import AuthenticationForm
+from .models import Request, Vote
+
 
 # 🔹 ГОЛОВНА
 def home(request):
@@ -16,7 +17,7 @@ def create_request(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
-        budget = request.POST.get('budget')  # optional
+        budget = request.POST.get('budget')
 
         if title and description:
             Request.objects.create(
@@ -32,7 +33,7 @@ def create_request(request):
     return render(request, 'create_request.html')
 
 
-# 🔹 СПИСОК ВСІХ ЗАЯВОК
+# 🔹 СПИСОК ЗАЯВОК
 def list_requests(request):
     sort = request.GET.get('sort')
 
@@ -66,22 +67,19 @@ def vote(request, request_id):
 # 🔹 МОЇ ЗАЯВКИ
 @login_required
 def my_requests(request):
-    requests = Request.objects.filter(
-        author=request.user
-    ).order_by('-id')
+    requests = Request.objects.filter(author=request.user).order_by('-id')
 
     return render(request, 'my_requests.html', {
         'requests': requests
     })
 
 
-# 🔹 ВИДАЛЕННЯ ЗАЯВКИ
+# 🔹 ВИДАЛЕННЯ
 @login_required
 def delete_request(request, id):
     req = get_object_or_404(Request, id=id)
 
-    # 🔒 тільки автор може видалити
-    if req.author == request.user:
+    if req.author == request.user or request.user.is_superuser:
         req.delete()
 
     return redirect('my_requests')
@@ -104,8 +102,8 @@ def register(request):
 
     return render(request, 'register.html')
 
-# 🔹 ЛОГІН
 
+# 🔹 ЛОГІН
 def login_view(request):
     form = AuthenticationForm(request, data=request.POST or None)
 
@@ -113,12 +111,15 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')
 
-    return render(request, 'login.html', {
-        'form': form
-    })
+            if user.is_superuser:
+                return redirect('admin_dashboard')
+            elif user.is_staff:
+                return redirect('supervisor_dashboard')
+            else:
+                return redirect('home')
 
+    return render(request, 'login.html', {'form': form})
 
 
 # 🔹 ЛОГАУТ
@@ -126,3 +127,30 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+
+# 🔴 АДМІН ПАНЕЛЬ (ГОЛОВНЕ ВИПРАВЛЕННЯ)
+@login_required
+def admin_dashboard(request):
+    if not user_is_admin(request.user):
+        return redirect('home')
+
+    requests = Request.objects.all().order_by('-id')
+
+    return render(request, 'admin_dashboard.html', {
+        'requests': requests
+    })
+
+
+# 🟡 СУПЕРВАЙЗЕР
+@login_required
+def supervisor_dashboard(request):
+    if not request.user.is_staff:
+        return redirect('home')
+
+    return render(request, 'supervisor.html')
+
+
+# 🔐 перевірка адміна
+def user_is_admin(user):
+    return user.is_superuser

@@ -11,6 +11,7 @@
     border-radius: 20px;
     backdrop-filter: blur(12px);
     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    color: white;
 }
 
 .auth-wrapper h1 {
@@ -21,7 +22,6 @@
 
 .subtitle {
     text-align: center;
-    color: white;
     margin-bottom: 15px;
 }
 
@@ -31,12 +31,10 @@
     border-radius: 12px;
     background: rgba(34,197,94,0.08);
     border: 1px solid rgba(34,197,94,0.2);
-    color: white;
     font-size: 14px;
     line-height: 1.5;
     text-align: center;
 }
-
 
 .error-box {
     margin: 15px 0;
@@ -55,19 +53,18 @@
     gap: 15px;
 }
 
+/* 🔴 Django form inputs */
 .form input {
     padding: 14px;
     border-radius: 12px;
     border: 1px solid rgba(255,255,255,0.1);
     background: rgba(255,255,255,0.03);
     color: white;
-    transition: 0.3s;
 }
 
 .form input:focus {
     outline: none;
     border: 1px solid #22c55e;
-    box-shadow: 0 0 10px rgba(34,197,94,0.3);
 }
 
 .btn {
@@ -77,19 +74,11 @@
     background: #22c55e;
     color: white;
     cursor: pointer;
-    transition: 0.3s;
-    font-weight: 500;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(34,197,94,0.3);
 }
 
 .extra {
     text-align: center;
     margin-top: 15px;
-    color: white;
     font-size: 14px;
 }
 
@@ -107,26 +96,27 @@
     </p>
 
     <div class="auth-hint">
-        🔐 Це безпечна система входу до FinoBoard.  
-        Після авторизації ви зможете подавати звернення, голосувати за проєкти та слідкувати за їхнім виконанням у реальному часі.
+        🔐 Безпечна система входу. Після авторизації ви отримаєте доступ до всіх функцій.
     </div>
 
-  
     {% if form.errors %}
         <div class="error-box">
-            ❌ Неправильний логін або пароль. Спробуйте ще раз.
+            ❌ Неправильний логін або пароль
         </div>
     {% endif %}
 
     <form method="post" class="form">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Логін" required>
-        <input type="password" name="password" placeholder="Пароль" required>
+
+        <!-- 🔴 ВАЖЛИВО: Django form -->
+        {{ form.username }}
+        {{ form.password }}
+
         <button class="btn">Увійти</button>
     </form>
 
     <div class="extra">
-        Немає акаунту? 
+        Немає акаунту?
         <a href="{% url 'register' %}">Зареєструватися</a>
     </div>
 </div>

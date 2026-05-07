@@ -6,12 +6,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Request, Vote
 
 
-# 🔹 ГОЛОВНА
 def home(request):
     return render(request, 'home.html')
 
 
-# 🔹 СТВОРЕННЯ ЗАЯВКИ
 @login_required
 def create_request(request):
     if request.method == 'POST':
@@ -33,21 +31,19 @@ def create_request(request):
     return render(request, 'create_request.html')
 
 
-# 🔹 СПИСОК ЗАЯВОК
 def list_requests(request):
     sort = request.GET.get('sort')
 
     if sort == 'new':
-        requests = Request.objects.all().order_by('-id')
+        requests = Request.objects.filter(is_deleted=False).order_by('-id')
     else:
-        requests = Request.objects.all().order_by('-votes')
+        requests = Request.objects.filter(is_deleted=False).order_by('-votes')
 
     return render(request, 'list_requests.html', {
         'requests': requests
     })
 
 
-# 🔹 ГОЛОСУВАННЯ
 @login_required
 def vote(request, request_id):
     req = get_object_or_404(Request, id=request_id)
@@ -64,28 +60,29 @@ def vote(request, request_id):
     return redirect('list')
 
 
-# 🔹 МОЇ ЗАЯВКИ
 @login_required
 def my_requests(request):
-    requests = Request.objects.filter(author=request.user).order_by('-id')
+    requests = Request.objects.filter(
+        author=request.user,
+        is_deleted=False
+    ).order_by('-id')
 
     return render(request, 'my_requests.html', {
         'requests': requests
     })
 
 
-# 🔹 ВИДАЛЕННЯ
 @login_required
 def delete_request(request, id):
     req = get_object_or_404(Request, id=id)
 
     if req.author == request.user or request.user.is_superuser:
-        req.delete()
+        req.is_deleted = True
+        req.save()
 
     return redirect('my_requests')
 
 
-# 🔹 РЕЄСТРАЦІЯ
 def register(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -93,17 +90,13 @@ def register(request):
 
         if username and password:
             if not User.objects.filter(username=username).exists():
-                user = User.objects.create_user(
-                    username=username,
-                    password=password
-                )
+                user = User.objects.create_user(username=username, password=password)
                 login(request, user)
                 return redirect('home')
 
     return render(request, 'register.html')
 
 
-# 🔹 ЛОГІН
 def login_view(request):
     form = AuthenticationForm(request, data=request.POST or None)
 
@@ -122,17 +115,15 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
-# 🔹 ЛОГАУТ
 @login_required
 def logout_view(request):
     logout(request)
     return redirect('home')
 
 
-# 🔴 АДМІН ПАНЕЛЬ (ГОЛОВНЕ ВИПРАВЛЕННЯ)
 @login_required
 def admin_dashboard(request):
-    if not user_is_admin(request.user):
+    if not request.user.is_superuser:
         return redirect('home')
 
     requests = Request.objects.all().order_by('-id')
@@ -142,18 +133,12 @@ def admin_dashboard(request):
     })
 
 
-# 🟡 СУПЕРВАЙЗЕР
 @login_required
 def supervisor_dashboard(request):
     if not request.user.is_staff:
         return redirect('home')
 
     return render(request, 'supervisor.html')
-
-
-# 🔐 перевірка адміна
-def user_is_admin(user):
-    return user.is_superuser
 
 
 @login_required
@@ -167,10 +152,7 @@ def edit_request(request, id):
         req.title = request.POST.get('title')
         req.description = request.POST.get('description')
         req.budget = request.POST.get('budget')
-
         req.save()
         return redirect('admin_dashboard')
 
-    return render(request, 'edit_request.html', {
-        'req': req
-    })
+    return render(request, 'edit_request.html', {'req': req})

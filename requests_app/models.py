@@ -13,13 +13,11 @@ class Request(models.Model):
         related_name='requests'
     )
 
-    # 🔥 ДОДАЄМО БЮДЖЕТ
-    budget = models.PositiveIntegerField(
-        null=True, 
-        blank=True
-    )
-
+    budget = models.PositiveIntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # 🔥 ДОБАВИЛИ
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title} ({self.author})"
@@ -36,6 +34,3 @@ class Vote(models.Model):
 
     class Meta:
         unique_together = ('user', 'request')
-
-    def __str__(self):
-        return f"{self.user} → {self.request}"

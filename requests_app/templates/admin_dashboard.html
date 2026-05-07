@@ -38,6 +38,10 @@
     transform: translateY(-5px);
 }
 
+.admin-card.deleted {
+    opacity: 0.7;
+    filter: grayscale(0.05);
+}
 .title {
     font-size: 18px;
     color: white;
@@ -48,10 +52,6 @@
     font-size: 14px;
     color: #cbd5e1;
     margin-bottom: 5px;
-}
-
-.highlight {
-    color: #22c55e;
 }
 
 .description {
@@ -80,11 +80,6 @@
     color: #ef4444;
 }
 
-.btn-success {
-    background: rgba(34,197,94,0.2);
-    color: #22c55e;
-}
-
 .btn-edit {
     background: rgba(59,130,246,0.2);
     color: #3b82f6;
@@ -106,11 +101,12 @@
 
 {% for req in requests %}
 
-    <div class="admin-card">
+    <!-- 🔥 якщо видалено → додаємо клас -->
+    <div class="admin-card {% if req.is_deleted %}deleted{% endif %}">
 
         <div class="title">{{ req.title }}</div>
 
-        <div class="stat">👤 Авор: {{ req.author.username }}</div>
+        <div class="stat">👤 Автор: {{ req.author.username }}</div>
         <div class="stat">👍 Кількість голосів: {{ req.votes }} голосів</div>
         <div class="stat">📅 Дата створення: {{ req.created_at|date:"d.m.Y" }}</div>
 
@@ -122,9 +118,16 @@
            Опис: {{ req.description }}
         </div>
 
+        <!-- 🔥 статус видалення -->
+        {% if req.is_deleted %}
+            <div style="color: #9ca3af; font-weight: bold; margin-top: 10px;">
+                ⚠️ ЦЮ ЗАЯВКУ ВИДАЛЕНО КОРИСТУВАЧЕМ
+            </div>
+        {% endif %}
+
         <div class="btn-group">
 
-            <!-- 🔴 DELETE -->
+            <!-- 🔴 DELETE (soft delete) -->
             <form method="post" action="{% url 'delete_request' req.id %}">
                 {% csrf_token %}
                 <button class="btn btn-danger">Видалити</button>

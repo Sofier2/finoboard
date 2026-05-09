@@ -17,7 +17,6 @@
     color: white;
 }
 
-
 .info-text {
     max-width: 800px;
     margin: 0 auto 30px;
@@ -28,14 +27,12 @@
     opacity: 0.9;
 }
 
-
 .requests-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 20px;
     padding: 20px 0;
 }
-
 
 .request-card {
     background: rgba(255,255,255,0.05);
@@ -66,14 +63,12 @@
     margin: 0;
 }
 
-/* VOTES */
 .vote {
     background: rgba(34,197,94,0.2);
     padding: 5px 10px;
     border-radius: 10px;
     font-size: 13px;
     color: #22c55e;
-    white-space: nowrap;
 }
 
 /* META */
@@ -104,7 +99,7 @@
     justify-content: flex-end;
 }
 
-/* DELETE BUTTON */
+/* BUTTON */
 .delete-btn {
     padding: 8px 12px;
     border-radius: 10px;
@@ -120,12 +115,25 @@
     color: white;
 }
 
+/* STATUS */
+.status {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.status.user {
+    color: #fca5a5;
+}
+
+.status.admin {
+    color: #fbbf24;
+}
+
 /* EMPTY */
 .empty {
     text-align: center;
-    color: white;
-    margin-top: 40px;
     color: #22c55e;
+    margin-top: 40px;
 }
 </style>
 
@@ -135,13 +143,13 @@
 </div>
 
 <div class="info-text">
-    Тут зібрані всі ваші подані звернення та ініціативи.  
-    Ви можете відстежувати їхній статус, кількість голосів та вплив на громаду.
+    Тут зібрані всі ваші подані звернення та ініціативи.
 </div>
 
 <div class="requests-grid">
 
 {% for req in requests %}
+
     <div class="request-card">
 
         <div>
@@ -150,7 +158,7 @@
                 <h3 class="request-title">{{ req.title }}</h3>
 
                 <div class="vote">
-                    Кількість голосів: {{ req.votes }}
+                    Голоси: {{ req.votes }}
                 </div>
             </div>
 
@@ -160,7 +168,7 @@
 
             {% if req.budget %}
             <div class="budget">
-                💰 Бюджет: {{ req.budget }} грн
+                💰 {{ req.budget }} грн
             </div>
             {% endif %}
 
@@ -168,20 +176,51 @@
                 {{ req.description }}
             </p>
 
+            {# 🔥 СТАТУС #}
+            {% if req.is_deleted %}
+
+                {% if req.deleted_by_admin %}
+                    <div class="status admin">
+                        ⚠️ ВИДАЛЕНО АДМІНІСТРАТОРОМ
+                    </div>
+                {% else %}
+                    <div class="status user">
+                        ⚠️ ВИДАЛЕНО КОРИСТУВАЧЕМ
+                    </div>
+                {% endif %}
+
+            {% endif %}
+
         </div>
 
+        <div class="actions">
 
+            {# 🔥 кнопка тільки якщо АКТИВНА #}
+            {% if not req.is_deleted %}
+
+                <form method="post" action="{% url 'delete_request' req.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-btn">
+                        Видалити
+                    </button>
+                </form>
+
+            {% endif %}
+
+        </div>
 
     </div>
 
 {% empty %}
+
     <p class="empty"><b>У вас ще немає заявок.</b></p>
+
 {% endfor %}
 
 </div>
 
 <div class="info-text" style="margin-top:40px;">
-    💡 Порада: активні заявки з великою кількістю голосів мають вищий пріоритет для реалізації.
+    💡 Порада: активні заявки з великою кількістю голосів мають вищий пріоритет.
 </div>
 
 {% endblock %}

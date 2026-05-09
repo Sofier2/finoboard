@@ -19,4 +19,12 @@ urlpatterns = [
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('supervisor-dashboard/', views.supervisor_dashboard, name='supervisor_dashboard'),
     path('edit/<int:id>/', views.edit_request, name='edit_request'),
+    path(
+    'hardware-login/',
+    views.hardware_login,
+    name='hardware_login'
+),
+path('check-hardware-auth/', views.check_hardware_auth),
+
+    path('hard-delete/<int:id>/', views.hard_delete_request, name='hard_delete_request'),
 ]

@@ -16,7 +16,6 @@ class Request(models.Model):
     budget = models.PositiveIntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # 🔥 ДОБАВИЛИ
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
@@ -25,12 +24,27 @@ class Request(models.Model):
 
 class Vote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
     request = models.ForeignKey(
         Request,
         on_delete=models.CASCADE,
         related_name='vote_set'
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'request')
+
+
+class CitizenProfile(models.Model):
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    pin_code = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.user.username

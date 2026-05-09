@@ -36,15 +36,10 @@
         font-weight: 600;
         text-decoration: none;
         color: white;
-        transition: 0.3s;
     }
 
     .logo span {
         color: #22c55e;
-    }
-
-    .logo:hover {
-        opacity: 0.8;
     }
 
     nav {
@@ -56,7 +51,6 @@
         margin-left: 20px;
         text-decoration: none;
         color: white;
-        transition: 0.3s;
         font-size: 15px;
     }
 
@@ -78,14 +72,8 @@
         color: white;
         border: none;
         cursor: pointer;
-        transition: 0.3s;
     }
 
-    .logout-btn:hover {
-        opacity: 0.85;
-    }
-
-    
     .container {
         flex: 1;
         padding: 20px 40px;
@@ -99,8 +87,8 @@
         background: rgba(255,255,255,0.03);
     }
     </style>
-
 </head>
+
 <body>
 
 <header class="header">
@@ -110,12 +98,27 @@
     </a>
 
     <nav>
-        {% if user.is_authenticated %}
-            <a href="{% url 'my_requests' %}">Мої заявки</a>
-        {% endif %}
 
-        <a href="{% url 'create' %}">Подати заявку</a>
-        <a href="{% url 'list' %}">Заявки</a>
+        {# ================= ADMIN ================= #}
+        {% if user.is_authenticated and user.is_superuser %}
+
+            <a href="{% url 'admin_dashboard' %}">Адмін панель</a>
+            <a href="{% url 'list' %}">Заявки</a>
+
+        {# ================= USER ================= #}
+        {% elif user.is_authenticated %}
+
+            <a href="{% url 'my_requests' %}">Мої заявки</a>
+            <a href="{% url 'create' %}">Подати заявку</a>
+            <a href="{% url 'list' %}">Заявки</a>
+
+        {% else %}
+
+            <a href="{% url 'list' %}">Заявки</a>
+            <a href="{% url 'login' %}">Увійти</a>
+            <a href="{% url 'register' %}">Реєстрація</a>
+
+        {% endif %}
 
         {% if user.is_authenticated %}
             <span class="user">{{ user.username }}</span>
@@ -124,10 +127,8 @@
                 {% csrf_token %}
                 <button type="submit" class="logout-btn">Вийти</button>
             </form>
-        {% else %}
-            <a href="{% url 'login' %}">Увійти</a>
-            <a href="{% url 'register' %}">Реєстрація</a>
         {% endif %}
+
     </nav>
 
 </header>
@@ -136,6 +137,21 @@
     {% block content %}{% endblock %}
 </div>
 
+<script>
+setInterval(() => {
+
+    fetch("/check-hardware-auth/")
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.authenticated && data.redirect) {
+                window.location.href = data.redirect;
+            }
+
+        });
+
+}, 1000);
+</script>
 <footer class="footer">
     <p>© 2026 FinoBoard</p>
 </footer>

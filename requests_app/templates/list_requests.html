@@ -194,8 +194,36 @@
         </div>
 
         <div>
-            <a href="{% url 'vote' req.id %}" class="btn">Підтримати</a>
-        </div>
+
+    {% if user.is_authenticated %}
+
+        {% if req.id in voted_requests %}
+
+            <button class="btn"
+                    style="background: gray; cursor: default;"
+                    disabled>
+                ✔ Ви вже голосували
+            </button>
+
+        {% else %}
+
+            <a href="{% url 'vote' req.id %}"
+               class="btn">
+                Підтримати
+            </a>
+
+        {% endif %}
+
+    {% else %}
+
+        <a href="{% url 'login' %}"
+           class="btn">
+            Увійти для голосування
+        </a>
+
+    {% endif %}
+
+</div>
 
     </div>
 

@@ -24,7 +24,17 @@ urlpatterns = [
     views.hardware_login,
     name='hardware_login'
 ),
+path(
+    'admin-delete/<int:id>/',
+    views.admin_delete_request,
+    name='admin_delete_request'
+),
 path('check-hardware-auth/', views.check_hardware_auth),
 
     path('hard-delete/<int:id>/', views.hard_delete_request, name='hard_delete_request'),
+  path(
+    'restore/<int:id>/',
+    views.restore_request,
+    name='restore_request'
+),
 ]

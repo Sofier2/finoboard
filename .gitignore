@@ -1,17 +1,32 @@
 # Python
 __pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
 *.pyc
 
-# Django
-db.sqlite3
-
-# venv
+# Virtual environment
 venv/
+env/
+.venv/
+
+# Django
+*.sqlite3
+db.sqlite3
+media/
+staticfiles/
+
+# Environment variables
 .env
 
 # IDE
 .vscode/
 .idea/
 
-# static build
-staticfiles/
+# OS files
+.DS_Store
+Thumbs.db
+
+# Migrations cache (не обов'язково, але чистить репо)
+**/migrations/__pycache__/

@@ -8,7 +8,22 @@ from django.http import JsonResponse
 from .models import Request, Vote
 import citizen_system.arduino_bridge as bridge
 
+# ----------------------------
+# 🚫 ADMIN SOFT DELETE
+# ----------------------------
+@login_required
+def admin_delete_request(request, id):
 
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    req = get_object_or_404(Request, id=id)
+
+    req.is_deleted = True
+    req.deleted_by_admin = True
+    req.save()
+
+    return redirect('admin_dashboard')
 # ----------------------------
 # 🔐 HARDWARE LOGIN PAGE
 # ----------------------------
@@ -94,14 +109,33 @@ def list_requests(request):
     sort = request.GET.get('sort')
 
     if sort == 'new':
-        requests = Request.objects.filter(is_deleted=False).order_by('-id')
+        requests = Request.objects.filter(
+            is_deleted=False
+        ).order_by('-id')
+
+    elif sort == 'old':
+        requests = Request.objects.filter(
+            is_deleted=False
+        ).order_by('id')
+
     else:
-        requests = Request.objects.filter(is_deleted=False).order_by('-votes')
+        requests = Request.objects.filter(
+            is_deleted=False
+        ).order_by('-votes')
+
+    voted_requests = []
+
+    if request.user.is_authenticated:
+
+        voted_requests = Vote.objects.filter(
+            user=request.user
+        ).values_list('request_id', flat=True)
 
     return render(request, 'list_requests.html', {
-        'requests': requests
+        'requests': requests,
+        'sort': sort,
+        'voted_requests': voted_requests
     })
-
 
 # ----------------------------
 # 👍 VOTE
@@ -122,7 +156,34 @@ def vote(request, request_id):
 
     return redirect('list')
 
+@login_required
+def admin_delete_request(request, id):
 
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    req = get_object_or_404(Request, id=id)
+
+    req.is_deleted = True
+    req.deleted_by_admin = True
+
+    req.save()
+
+    return redirect('admin_dashboard')
+
+@login_required
+def restore_request(request, id):
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    req = get_object_or_404(Request, id=id)
+
+    req.is_deleted = False
+    req.deleted_by_admin = False
+    req.save()
+
+    return redirect('admin_dashboard')
 # ----------------------------
 # 👤 MY REQUESTS
 # ----------------------------
@@ -130,8 +191,7 @@ def vote(request, request_id):
 def my_requests(request):
 
     requests = Request.objects.filter(
-        author=request.user,
-        is_deleted=False
+        author=request.user
     ).order_by('-id')
 
     return render(request, 'my_requests.html', {

@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import change_request_status
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -40,5 +41,6 @@ path(
     'hard-delete/<int:id>/',
     views.hard_delete_request,
     name='hard_delete_request'
-)
+),
+path('request/<int:pk>/status/', change_request_status, name='change_request_status'),
 ]

@@ -187,6 +187,19 @@
                 💰 Орієнтовний бюджет: {{ req.budget }} грн
             </div>
             {% endif %}
+            <div class="meta">
+    📌 Статус:
+
+    {% if req.status == 'vote' %}
+        🟡 На голосуванні
+    {% elif req.status == 'review' %}
+        🟠 На розгляді
+    {% elif req.status == 'approved' %}
+        🟢 Виділено кошти
+    {% elif req.status == 'implemented' %}
+        🔵 Реалізовано
+    {% endif %}
+</div>
 
             <p class="description">
                 {{ req.description }}

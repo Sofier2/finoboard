@@ -149,6 +149,7 @@ body {
 }
 </style>
 
+
 <div class="page-header">
     <h1>Адмін панель</h1>
     <p class="subtitle">Всі заявки системи</p>
@@ -158,105 +159,144 @@ body {
 
 {% for req in requests %}
 
-    <div class="admin-card {% if req.is_deleted %}deleted{% endif %}">
+<div class="admin-card {% if req.is_deleted %}deleted{% endif %}">
 
-        <div class="title">
-            {{ req.title }}
-        </div>
+    <div class="title">
+        {{ req.title }}
+    </div>
 
-        <div class="stat">
-            👤 Автор: {{ req.author.username }}
-        </div>
+    <div class="stat">
+        👤 Автор: {{ req.author.username }}
+    </div>
 
-        <div class="stat">
-            👍 Голоси: {{ req.votes }}
-        </div>
+    <div class="stat">
+        👍 Голоси: {{ req.votes }}
+    </div>
 
-        <div class="stat">
-            📅 {{ req.created_at|date:"d.m.Y" }}
-        </div>
+    <div class="stat">
+        📅 {{ req.created_at|date:"d.m.Y" }}
+    </div>
 
-        {% if req.budget %}
-        <div class="stat">
-            💰 Бюджет: {{ req.budget }} грн
-        </div>
+    {% if req.budget %}
+    <div class="stat">
+        💰 Бюджет: {{ req.budget }} грн
+    </div>
+    {% endif %}
+
+    <!-- 🔥 STATUS -->
+    <div class="stat">
+        📌 Статус:
+
+        {% if req.status == 'vote' %}
+            🟡 На голосуванні
+        {% elif req.status == 'review' %}
+            🟠 На розгляді
+        {% elif req.status == 'approved' %}
+            🟢 Виділено кошти
+        {% elif req.status == 'implemented' %}
+            🔵 Реалізовано
+        {% endif %}
+    </div>
+
+    <div class="description">
+        {{ req.description }}
+    </div>
+
+    <!-- 🔥 DELETE INFO -->
+    {% if req.is_deleted %}
+        {% if req.deleted_by_admin %}
+            <div class="deleted-admin">
+                ⚠️ ВИДАЛЕНО АДМІНІСТРАТОРОМ
+            </div>
+        {% else %}
+            <div class="deleted-user">
+                ⚠️ ВИДАЛЕНО КОРИСТУВАЧЕМ
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div class="btn-group">
+
+        <!-- 🔧 STATUS CONTROL (ADMIN) -->
+        {% if not req.is_deleted %}
+
+        <form method="post"
+              action="{% url 'change_request_status' req.id %}">
+            {% csrf_token %}
+
+            <select name="status" class="btn btn-edit">
+                <option value="vote" {% if req.status == 'vote' %}selected{% endif %}>
+                    На голосуванні
+                </option>
+
+                <option value="review" {% if req.status == 'review' %}selected{% endif %}>
+                    На розгляді
+                </option>
+
+                <option value="approved" {% if req.status == 'approved' %}selected{% endif %}>
+                    Виділено кошти
+                </option>
+
+                <option value="implemented" {% if req.status == 'implemented' %}selected{% endif %}>
+                    Реалізовано
+                </option>
+            </select>
+
+            <button type="submit" class="btn btn-edit">
+                Оновити статус
+            </button>
+        </form>
+
+        <form method="post"
+              action="{% url 'admin_delete_request' req.id %}">
+            {% csrf_token %}
+
+            <button type="submit"
+                    class="btn btn-danger"
+                    onclick="return confirm('Видалити заявку?')">
+                Видалити
+            </button>
+        </form>
+
+        <a href="{% url 'edit_request' req.id %}"
+           class="btn btn-edit">
+            Редагувати
+        </a>
+
         {% endif %}
 
-        <div class="description">
-            {{ req.description }}
-        </div>
+        <!-- 🔴 HARD DELETE -->
+        <form method="post"
+              action="{% url 'hard_delete_request' req.id %}">
+            {% csrf_token %}
 
-        <!-- 🔥 STATUS -->
+            <button type="submit"
+                    class="btn btn-danger"
+                    onclick="return confirm('Видалити назавжди?')">
+                🗑 Видалити зі системи
+            </button>
+        </form>
+
         {% if req.is_deleted %}
+        <form method="post"
+              action="{% url 'restore_request' req.id %}">
+            {% csrf_token %}
 
-            {% if req.deleted_by_admin %}
-                <div class="deleted-admin">
-                    ⚠️ ВИДАЛЕНО АДМІНІСТРАТОРОМ
-                </div>
-            {% else %}
-                <div class="deleted-user">
-                    ⚠️ ВИДАЛЕНО КОРИСТУВАЧЕМ
-                </div>
-            {% endif %}
-
+            <button class="btn btn-edit">
+                ♻️ Відновити
+            </button>
+        </form>
         {% endif %}
-
-        <div class="btn-group">
-
-            <!-- ✅ ACTIVE REQUEST -->
-            {% if not req.is_deleted %}
-
-<form method="post"
-      action="{% url 'admin_delete_request' req.id %}">
-                    {% csrf_token %}
-
-<button type="submit"
-        class="btn btn-danger"
-        onclick="return confirm('Видалити заявку?')">
-                        Видалити
-                    </button>
-                </form>
-
-                <a href="{% url 'edit_request' req.id %}"
-                   class="btn btn-edit">
-                    Редагувати
-                </a>
-
-            {% endif %}
-
-            <!-- 🔴 HARD DELETE -->
-            <form method="post"
-                  action="{% url 'hard_delete_request' req.id %}">
-                {% csrf_token %}
-
-<button type="submit"
-        class="btn btn-danger"
-        onclick="return confirm('Видалити зі системи назавжди?')">
-                    🗑 Видалити зі системи
-                </button>
-            </form>
-{% if req.is_deleted %}
-
-    <form method="post"
-          action="{% url 'restore_request' req.id %}">
-        {% csrf_token %}
-
-        <button class="btn btn-edit">
-            ♻️ Відновити заявку
-        </button>
-
-    </form>
-
-{% endif %}
-        </div>
 
     </div>
 
+</div>
+
 {% empty %}
 
-    <p class="empty">
-        <b>Немає заявок</b>
-    </p>
+<p class="empty">
+    <b>Немає заявок</b>
+</p>
 
 {% endfor %}
 

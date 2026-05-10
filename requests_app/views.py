@@ -268,6 +268,14 @@ def register(request):
 
     return render(request, 'register.html')
 
+
+def change_request_status(request, pk):
+    if request.method == "POST":
+        req = get_object_or_404(Request, id=pk)
+        req.status = request.POST.get("status")
+        req.save()
+
+    return redirect('admin_dashboard')
 # ----------------------------
 # 🔑 LOGIN
 # ----------------------------

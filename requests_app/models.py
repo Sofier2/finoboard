@@ -4,8 +4,14 @@ from django.contrib.auth.models import User
 
 class Request(models.Model):
 
-    title = models.CharField(max_length=255)
+    STATUS_CHOICES = [
+        ('vote', 'На голосуванні'),
+        ('review', 'На розгляді'),
+        ('approved', 'Виділено кошти'),
+        ('implemented', 'Реалізовано'),
+    ]
 
+    title = models.CharField(max_length=255)
     description = models.TextField()
 
     votes = models.PositiveIntegerField(default=0)
@@ -21,9 +27,13 @@ class Request(models.Model):
         blank=True
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='vote'
     )
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     # 🔥 soft delete
     is_deleted = models.BooleanField(default=False)
@@ -45,12 +55,10 @@ class Vote(models.Model):
     request = models.ForeignKey(
         Request,
         on_delete=models.CASCADE,
-        related_name='vote_set'
+        related_name='votes_set'
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'request')

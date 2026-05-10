@@ -9,7 +9,7 @@ from .models import Request, Vote
 import citizen_system.arduino_bridge as bridge
 
 # ----------------------------
-# 🚫 ADMIN SOFT DELETE
+# ADMIN SOFT DELETE
 # ----------------------------
 @login_required
 def admin_delete_request(request, id):
@@ -25,7 +25,7 @@ def admin_delete_request(request, id):
 
     return redirect('admin_dashboard')
 # ----------------------------
-# 🔐 HARDWARE LOGIN PAGE
+# HARDWARE LOGIN PAGE
 # ----------------------------
 def hardware_login(request):
 
@@ -50,7 +50,7 @@ def hardware_login(request):
     return render(request, 'hardware_wait.html')
 
 # ----------------------------
-# 🔐 AJAX CHECK AUTH (ONLY CHECK, NO LOGIN!)
+# AJAX CHECK AUTH (ONLY CHECK, NO LOGIN!)
 # ----------------------------
 def check_hardware_auth(request):
 
@@ -68,14 +68,14 @@ def check_hardware_auth(request):
 
 
 # ----------------------------
-# 🏠 HOME
+# HOME
 # ----------------------------
 def home(request):
     return render(request, 'home.html')
 
 
 # ----------------------------
-# ➕ CREATE REQUEST
+# CREATE REQUEST
 # ----------------------------
 @login_required
 def create_request(request):
@@ -102,7 +102,7 @@ def create_request(request):
 
 
 # ----------------------------
-# 📋 LIST REQUESTS
+# LIST REQUESTS
 # ----------------------------
 def list_requests(request):
 
@@ -138,7 +138,7 @@ def list_requests(request):
     })
 
 # ----------------------------
-# 👍 VOTE
+# VOTE
 # ----------------------------
 @login_required
 def vote(request, request_id):
@@ -185,7 +185,7 @@ def restore_request(request, id):
 
     return redirect('admin_dashboard')
 # ----------------------------
-# 👤 MY REQUESTS
+# MY REQUESTS
 # ----------------------------
 @login_required
 def my_requests(request):
@@ -200,7 +200,7 @@ def my_requests(request):
 
 
 # ----------------------------
-# 🗑 SOFT DELETE
+# SOFT DELETE
 # ----------------------------
 @login_required
 def delete_request(request, id):
@@ -215,7 +215,7 @@ def delete_request(request, id):
 
     return redirect('my_requests')
 # ----------------------------
-# 🧨 HARD DELETE (FIXED + ADDED)
+# HARD DELETE (FIXED + ADDED)
 # ----------------------------
 @login_required
 def hard_delete_request(request, id):
@@ -231,7 +231,7 @@ def hard_delete_request(request, id):
 
 
 # ----------------------------
-# 📝 REGISTER
+# REGISTER
 # ----------------------------
 def register(request):
 
@@ -277,7 +277,7 @@ def change_request_status(request, pk):
 
     return redirect('admin_dashboard')
 # ----------------------------
-# 🔑 LOGIN
+# LOGIN
 # ----------------------------
 def login_view(request):
 
@@ -303,7 +303,7 @@ def login_view(request):
 
 
 # ----------------------------
-# 🚪 LOGOUT
+# LOGOUT
 # ----------------------------
 @login_required
 def logout_view(request):
@@ -313,7 +313,7 @@ def logout_view(request):
 
 
 # ----------------------------
-# 🛡 ADMIN DASHBOARD
+# ADMIN DASHBOARD
 # ----------------------------
 @login_required
 def admin_dashboard(request):
@@ -329,7 +329,7 @@ def admin_dashboard(request):
 
 
 # ----------------------------
-# 🧑‍💼 SUPERVISOR DASHBOARD
+# SUPERVISOR DASHBOARD
 # ----------------------------
 @login_required
 def supervisor_dashboard(request):
@@ -341,7 +341,7 @@ def supervisor_dashboard(request):
 
 
 # ----------------------------
-# ✏️ EDIT REQUEST
+# EDIT REQUEST
 # ----------------------------
 @login_required
 def edit_request(request, id):

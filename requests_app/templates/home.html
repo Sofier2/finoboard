@@ -106,10 +106,19 @@ body {
         ефективність та автоматизацію процесів у громаді.
     </p>
 
-    <div class="hero-buttons">
-        <a href="{% url 'create' %}" class="btn">Подати звернення</a>
-        <a href="{% url 'list' %}" class="btn secondary">Переглянути заявки</a>
-    </div>
+   <div class="hero-buttons">
+
+    {% if not user.is_superuser %}
+        <a href="{% url 'create' %}" class="btn">
+            Подати звернення
+        </a>
+    {% endif %}
+
+    <a href="{% url 'list' %}" class="btn secondary">
+        Переглянути заявки
+    </a>
+
+</div>
 </section>
 
 <section class="info">

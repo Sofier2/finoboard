@@ -35,10 +35,10 @@ class Request(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # 🔥 soft delete
+    
     is_deleted = models.BooleanField(default=False)
 
-    # 🔥 хто видалив
+    
     deleted_by_admin = models.BooleanField(default=False)
 
     def __str__(self):

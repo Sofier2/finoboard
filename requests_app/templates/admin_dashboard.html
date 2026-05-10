@@ -210,8 +210,9 @@ body {
       action="{% url 'admin_delete_request' req.id %}">
                     {% csrf_token %}
 
-                    <button class="btn btn-danger"
-                            onclick="return confirm('Видалити заявку?')">
+<button type="submit"
+        class="btn btn-danger"
+        onclick="return confirm('Видалити заявку?')">
                         Видалити
                     </button>
                 </form>
@@ -228,8 +229,9 @@ body {
                   action="{% url 'hard_delete_request' req.id %}">
                 {% csrf_token %}
 
-                <button class="btn btn-danger"
-                        onclick="return confirm('Видалити зі системи назавжди?')">
+<button type="submit"
+        class="btn btn-danger"
+        onclick="return confirm('Видалити зі системи назавжди?')">
                     🗑 Видалити зі системи
                 </button>
             </form>

@@ -238,22 +238,35 @@ def register(request):
     if request.method == 'POST':
 
         username = request.POST.get('username')
-        password = request.POST.get('password')
+        email = request.POST.get('email')
 
-        if username and password:
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
 
-            if not User.objects.filter(username=username).exists():
+        # перевірка паролів
+        if password1 != password2:
+            return render(request, 'register.html', {
+                'error': 'Паролі не співпадають'
+            })
 
-                user = User.objects.create_user(
-                    username=username,
-                    password=password
-                )
+        # перевірка username
+        if User.objects.filter(username=username).exists():
+            return render(request, 'register.html', {
+                'error': 'Користувач вже існує'
+            })
 
-                login(request, user)
-                return redirect('home')
+        # створення користувача
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password1
+        )
+
+        login(request, user)
+
+        return redirect('home')
 
     return render(request, 'register.html')
-
 
 # ----------------------------
 # 🔑 LOGIN

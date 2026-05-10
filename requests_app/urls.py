@@ -15,7 +15,7 @@ urlpatterns = [
     path('my-requests/', views.my_requests, name='my_requests'),
     path('delete/<int:id>/', views.delete_request, name='delete_request'),
 
-    # 🔴 ДОДАЙ ОЦЕ
+
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('supervisor-dashboard/', views.supervisor_dashboard, name='supervisor_dashboard'),
     path('edit/<int:id>/', views.edit_request, name='edit_request'),
@@ -31,10 +31,14 @@ path(
 ),
 path('check-hardware-auth/', views.check_hardware_auth),
 
-    path('hard-delete/<int:id>/', views.hard_delete_request, name='hard_delete_request'),
   path(
     'restore/<int:id>/',
     views.restore_request,
     name='restore_request'
 ),
+path(
+    'hard-delete/<int:id>/',
+    views.hard_delete_request,
+    name='hard_delete_request'
+)
 ]

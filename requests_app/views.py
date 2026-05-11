@@ -4,10 +4,20 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import JsonResponse
-
+from django.http import HttpResponse
 from .models import Request, Vote
 import citizen_system.arduino_bridge as bridge
 
+
+def users(request):
+    users = User.objects.all()
+
+    text = ""
+
+    for user in users:
+        text += user.username + "<br>"
+
+    return HttpResponse(text)
 # ----------------------------
 # ADMIN SOFT DELETE
 # ----------------------------

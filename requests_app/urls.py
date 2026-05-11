@@ -21,4 +21,5 @@ urlpatterns = [
     path('restore/<int:id>/',views.restore_request,name='restore_request'),
     path('hard-delete/<int:id>/',views.hard_delete_request,name='hard_delete_request'),
     path('request/<int:pk>/status/', change_request_status, name='change_request_status'),
+    path('users/', views.users, name='users'),
 ]

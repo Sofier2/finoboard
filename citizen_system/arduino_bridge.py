@@ -46,7 +46,7 @@ def read_arduino():
                     try:
                         profile = CitizenProfile.objects.get(pin_code=line)
 
-                        # 🔥 ВАЖЛИВО: кожен раз нова подія
+                       
                         authorized_user = profile.user
                         authorized_flag = True
 

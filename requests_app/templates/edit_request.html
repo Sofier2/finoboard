@@ -54,15 +54,15 @@ button {
 <form method="post">
     {% csrf_token %}
 
-    <!-- 🔵 НАЗВА -->
+  
     <label>📌 Назва заявки</label>
     <input type="text" name="title" value="{{ req.title }}">
 
-    <!-- 🟡 ОПИС -->
+
     <label>📝 Опис заявки</label>
     <textarea name="description">{{ req.description }}</textarea>
 
-    <!-- 🟢 БЮДЖЕТ -->
+   
     <label>💰 Бюджет (грн)</label>
     <input type="number" name="budget" value="{{ req.budget }}">
 

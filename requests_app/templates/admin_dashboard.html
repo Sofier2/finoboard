@@ -183,7 +183,6 @@ body {
     </div>
     {% endif %}
 
-    <!-- 🔥 STATUS -->
     <div class="stat">
         📌 Статус:
 
@@ -202,7 +201,7 @@ body {
         {{ req.description }}
     </div>
 
-    <!-- 🔥 DELETE INFO -->
+    
     {% if req.is_deleted %}
         {% if req.deleted_by_admin %}
             <div class="deleted-admin">
@@ -265,7 +264,7 @@ body {
 
         {% endif %}
 
-        <!-- 🔴 HARD DELETE -->
+      
         <form method="post"
               action="{% url 'hard_delete_request' req.id %}">
             {% csrf_token %}

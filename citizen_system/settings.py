@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,6 +75,7 @@ WSGI_APPLICATION = 'citizen_system.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+DB_HOST = os.getenv("DB_HOST", "localhost")
 
 DATABASES = {
     'default': {
@@ -81,12 +83,10 @@ DATABASES = {
         'NAME': 'citizen_db',
         'USER': 'sophia',
         'PASSWORD': '111111',
-        'HOST': 'localhost',
+        'HOST': DB_HOST,
         'PORT': '3306',
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

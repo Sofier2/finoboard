@@ -1,0 +1,19 @@
+<h1>Enter PIN on keypad</h1>
+
+<meta http-equiv="refresh" content="2">
+
+<script>
+setInterval(() => {
+
+    fetch("/check-hardware-auth/")
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.authenticated) {
+                window.location.href = "/";
+            }
+
+        });
+
+}, 1000);
+</script>

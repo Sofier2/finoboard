@@ -17,6 +17,10 @@ services:
     build: .
     command: >
       sh -c "
+      until nc -z db 3306; do
+        echo 'Waiting for MySQL...';
+        sleep 2;
+      done;
       python manage.py migrate &&
       python manage.py runserver 0.0.0.0:8000
       "
@@ -26,3 +30,5 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    environment:
+      DB_HOST: db

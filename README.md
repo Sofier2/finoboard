@@ -24,7 +24,6 @@ FinoBoard — це веб-застосунок, розроблений для а
 - Docker / Docker Compose (контейнеризація)
 - HTML / CSS (Django templates)
 
--
 
 ## Як запустити проєкт
 
@@ -72,8 +71,9 @@ docker compose exec web python manage.py createsuperuser
 Ручне виконання міграцій: docker compose exec web python manage.py migrate
 
 ##  Порти:
-Django	8000
-MySQL	3307 → 3306
+
+- Django	8000
+- MySQL	3307 → 3306
 
 ##  Зупинка проєкту: 
 

@@ -70,13 +70,6 @@ docker compose exec web python manage.py createsuperuser
 - email
 - password
 
-##  База даних
-
-- СУБД: MySQL 8
-- База даних: finoboard
-- Хост: db (Docker service name)
-- Порт зовнішній: 3307
-- Порт внутрішній: 3306
 
 
 ##  Міграції

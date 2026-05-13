@@ -2,76 +2,15 @@
 
 {% block content %}
 
-<style>
-
-.users-grid{
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-    max-width:850px;
-    margin:40px auto;
-}
-
-.user-card{
-    background:rgba(15,23,42,0.85);
-    padding:24px;
-    border-radius:20px;
-    color:white;
-    border:1px solid rgba(255,255,255,0.06);
-}
-
-.user-card.blocked{
-    opacity:0.7;
-    border:1px solid #ef4444;
-}
-
-.btn-group{
-    margin-top:20px;
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-}
-
-.btn{
-    padding:10px 16px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-    text-decoration:none;
-    font-weight:600;
-}
-
-.btn-danger{
-    background:rgba(239,68,68,0.15);
-    color:#ef4444;
-}
-
-.btn-danger:hover{
-    background:#ef4444;
-    color:white;
-}
-
-.btn-edit{
-    background:rgba(59,130,246,0.15);
-    color:#3b82f6;
-}
-
-.btn-edit:hover{
-    background:#3b82f6;
-    color:white;
-}
-
-</style>
-
 <div style="text-align:center;margin:40px 0;">
     <h1 style="color:white;">Користувачі системи</h1>
 </div>
 
-<div class="users-grid">
+<div class="fb-users-grid">
 
 {% for user in users %}
 
-<div class="user-card {% if not user.is_active %}blocked{% endif %}">
+<div class="fb-user-card {% if not user.is_active %}blocked{% endif %}">
 
     <h2>{{ user.username }}</h2>
 
@@ -103,7 +42,7 @@
         📅 {{ user.date_joined|date:"d.m.Y" }}
     </p>
 
-    <div class="btn-group">
+    <div class="fb-btn-group">
 
         {% if user.is_active %}
 
@@ -111,7 +50,7 @@
               action="{% url 'block_user' user.id %}">
             {% csrf_token %}
 
-            <button class="btn btn-danger">
+            <button class="fb-btn fb-btn-danger">
                 Заблокувати
             </button>
         </form>
@@ -122,7 +61,7 @@
               action="{% url 'unblock_user' user.id %}">
             {% csrf_token %}
 
-            <button class="btn btn-edit">
+            <button class="fb-btn fb-btn-edit">
                 Розблокувати
             </button>
         </form>
@@ -133,7 +72,7 @@
               action="{% url 'delete_user' user.id %}">
             {% csrf_token %}
 
-            <button class="btn btn-danger"
+            <button class="fb-btn fb-btn-danger"
                     onclick="return confirm('Видалити користувача?')">
                 Видалити
             </button>

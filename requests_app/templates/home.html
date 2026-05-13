@@ -2,103 +2,9 @@
 
 {% block content %}
 
-<style>
-.hero {
-    text-align: center;
-    padding: 100px 20px;
-}
-
-.hero h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-}
-
-/* бренд */
-.logo-white {
-    color: white;
-}
-
-.logo-green {
-    color: #22c55e;
-}
-
-
-.hero p {
-    max-width: 700px;
-    margin: 0 auto 30px;
-    color: white;
-    font-size: 18px;
-}
-
-.hero-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.btn {
-    padding: 12px 24px;
-    background: #22c55e;
-    border-radius: 12px;
-    text-decoration: none;
-    color: white;
-    transition: 0.3s;
-    font-weight: 500;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(34,197,94,0.3);
-}
-
-.btn.secondary {
-    background: transparent;
-    border: 1px solid #22c55e;
-}
-
-.info {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 в ряд */
-    gap: 20px;
-    padding: 60px 40px;
-}
-
-.card {
-    background: rgba(255,255,255,0.05);
-    padding: 25px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    transition: 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.card h3 {
-    margin-bottom: 15px;
-    font-size: 20px;
-}
-
-.card p {
-    color: white;
-}
-
-.extra {
-    padding: 60px 40px;
-    text-align: center;
-    color: white;
-}
-
-body {
-    background: radial-gradient(circle at top, #111827, #020617);
-}
-</style>
-
-<section class="hero">
+<section class="home-hero">
    <h1>
-    <span class="logo-white">Fino</span><span class="logo-green">Board</span>
+    <span class="home-logo-white">Fino</span><span class="home-logo-green">Board</span>
    </h1>
     <p>
         Сучасна інформаційна система для управління зверненнями громадян та 
@@ -106,23 +12,23 @@ body {
         ефективність та автоматизацію процесів у громаді.
     </p>
 
-   <div class="hero-buttons">
+   <div class="home-hero-buttons">
 
     {% if not user.is_superuser %}
-        <a href="{% url 'create' %}" class="btn">
+        <a href="{% url 'create' %}" class="home-btn">
             Подати звернення
         </a>
     {% endif %}
 
-    <a href="{% url 'list' %}" class="btn secondary">
+    <a href="{% url 'list' %}" class="home-btn secondary">
         Переглянути заявки
     </a>
 
 </div>
 </section>
 
-<section class="info">
-    <div class="card">
+<section class="home-info">
+    <div class="home-card">
         <h3>📌 Як це працює?</h3>
         <p>
             Користувачі подають звернення щодо проблем або ідей розвитку,
@@ -130,7 +36,7 @@ body {
         </p>
     </div>
 
-<div class="card">
+<div class="home-card">
     <h3>📊 Пріоритетність</h3>
     <p>
         Кожне звернення отримує рівень пріоритету, який формується на основі голосування користувачів.
@@ -139,7 +45,7 @@ body {
     </p>
 </div>
 
-    <div class="card">
+    <div class="home-card">
         <h3>💰 Контроль бюджету</h3>
         <p>
             Всі витрати фіксуються, що забезпечує контроль
@@ -147,7 +53,7 @@ body {
         </p>
     </div>
 
-    <div class="card">
+    <div class="home-card">
         <h3>📂 Облік звернень</h3>
         <p>
             Система зберігає історію всіх звернень,
@@ -155,7 +61,7 @@ body {
         </p>
     </div>
 
-    <div class="card">
+    <div class="home-card">
         <h3>⚡ Автоматизація</h3>
         <p>
             Більшість процесів виконуються автоматично,
@@ -163,7 +69,7 @@ body {
         </p>
     </div>
 
-    <div class="card">
+    <div class="home-card">
         <h3>🤝 Прозорість</h3>
         <p>
             Всі процеси відкриті для користувачів,
@@ -171,7 +77,5 @@ body {
         </p>
     </div>
 </section>
-
-
 
 {% endblock %}

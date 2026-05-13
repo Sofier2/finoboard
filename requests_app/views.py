@@ -8,9 +8,7 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.http import HttpResponse
-
 from .models import Request, Vote
-
 import citizen_system.arduino_bridge as bridge
 
 

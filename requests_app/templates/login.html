@@ -32,7 +32,6 @@
     background: rgba(34,197,94,0.08);
     border: 1px solid rgba(34,197,94,0.2);
     font-size: 14px;
-    line-height: 1.5;
     text-align: center;
 }
 
@@ -52,7 +51,6 @@
     flex-direction: column;
     gap: 15px;
 }
-
 
 .form input {
     padding: 14px;
@@ -75,49 +73,36 @@
     color: white;
     cursor: pointer;
 }
-
-.extra {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 14px;
-}
-
-.extra a {
-    color: #22c55e;
-    text-decoration: none;
-}
 </style>
 
 <div class="auth-wrapper">
     <h1>Вхід у FinoBoard</h1>
 
-    <p class="subtitle">
-        Увійдіть, щоб керувати заявками та голосувати
-    </p>
+    <p class="subtitle">Увійдіть, щоб керувати заявками</p>
 
     <div class="auth-hint">
-        🔐 Безпечна система входу. Після авторизації ви отримаєте доступ до всіх функцій.
+        🔐 Безпечний вхід у систему
     </div>
 
-    {% if form.errors %}
+    {% if error %}
         <div class="error-box">
-            ❌ Неправильний логін або пароль
+            ❌ {{ error }}
         </div>
     {% endif %}
 
     <form method="post" class="form">
         {% csrf_token %}
 
-      
-        {{ form.username }}
-        {{ form.password }}
+        <input type="text" name="username" placeholder="Логін" required>
 
-        <button class="btn">Увійти</button>
+        <input type="password" name="password" placeholder="Пароль" required>
+
+        <button type="submit" class="btn">Увійти</button>
     </form>
 
-    <div class="extra">
+    <div class="extra" style="text-align:center; margin-top:15px;">
         Немає акаунту?
-        <a href="{% url 'register' %}">Зареєструватися</a>
+        <a href="{% url 'register' %}" style="color:#22c55e;">Зареєструватися</a>
     </div>
 </div>
 

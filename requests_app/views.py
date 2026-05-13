@@ -1,23 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.http import HttpResponse
+
 from .models import Request, Vote
+
 import citizen_system.arduino_bridge as bridge
 
 
-def users(request):
-    users = User.objects.all()
-
-    text = ""
-
-    for user in users:
-        text += user.username + "<br>"
-
-    return HttpResponse(text)
 # ----------------------------
 # ADMIN SOFT DELETE
 # ----------------------------
@@ -29,9 +25,17 @@ def admin_delete_request(request, id):
 
     req = get_object_or_404(Request, id=id)
 
-    req.is_deleted = True
-    req.deleted_by_admin = True
-    req.save()
+    if request.method == "POST":
+
+        reason = request.POST.get("reason")
+
+        req.is_deleted = True
+        req.deleted_by_admin = True
+
+        # 🔥 ОЦЕ БУЛО ВІДСУТНЄ
+        req.delete_reason = reason if reason else None
+
+        req.save()
 
     return redirect('admin_dashboard')
 # ----------------------------
@@ -45,22 +49,23 @@ def hardware_login(request):
 
         login(request, user)
 
-        # очистка після успішного login
         bridge.authorized_user = None
         bridge.authorized_flag = False
 
-        # 👉 одразу кидаємо в правильний кабінет
         if user.is_superuser:
             return redirect('admin_dashboard')
+
         elif user.is_staff:
             return redirect('supervisor_dashboard')
+
         else:
             return redirect('home')
 
     return render(request, 'hardware_wait.html')
 
+
 # ----------------------------
-# AJAX CHECK AUTH (ONLY CHECK, NO LOGIN!)
+# AJAX CHECK AUTH
 # ----------------------------
 def check_hardware_auth(request):
 
@@ -74,13 +79,16 @@ def check_hardware_auth(request):
             "redirect": "/hardware-login/"
         })
 
-    return JsonResponse({"authenticated": False})
+    return JsonResponse({
+        "authenticated": False
+    })
 
 
 # ----------------------------
 # HOME
 # ----------------------------
 def home(request):
+
     return render(request, 'home.html')
 
 
@@ -119,16 +127,19 @@ def list_requests(request):
     sort = request.GET.get('sort')
 
     if sort == 'new':
+
         requests = Request.objects.filter(
             is_deleted=False
         ).order_by('-id')
 
     elif sort == 'old':
+
         requests = Request.objects.filter(
             is_deleted=False
         ).order_by('id')
 
     else:
+
         requests = Request.objects.filter(
             is_deleted=False
         ).order_by('-votes')
@@ -147,6 +158,7 @@ def list_requests(request):
         'voted_requests': voted_requests
     })
 
+
 # ----------------------------
 # VOTE
 # ----------------------------
@@ -161,26 +173,16 @@ def vote(request, request_id):
     )
 
     if created:
+
         req.votes += 1
         req.save()
 
     return redirect('list')
 
-@login_required
-def admin_delete_request(request, id):
 
-    if not request.user.is_superuser:
-        return redirect('home')
-
-    req = get_object_or_404(Request, id=id)
-
-    req.is_deleted = True
-    req.deleted_by_admin = True
-
-    req.save()
-
-    return redirect('admin_dashboard')
-
+# ----------------------------
+# RESTORE REQUEST
+# ----------------------------
 @login_required
 def restore_request(request, id):
 
@@ -191,9 +193,12 @@ def restore_request(request, id):
 
     req.is_deleted = False
     req.deleted_by_admin = False
+
     req.save()
 
     return redirect('admin_dashboard')
+
+
 # ----------------------------
 # MY REQUESTS
 # ----------------------------
@@ -210,22 +215,32 @@ def my_requests(request):
 
 
 # ----------------------------
-# SOFT DELETE
+# USER SOFT DELETE
 # ----------------------------
 @login_required
 def delete_request(request, id):
 
     req = get_object_or_404(Request, id=id)
 
-    if req.author == request.user:
+    if req.author != request.user:
+        return redirect('my_requests')
+
+    if request.method == "POST":
+
+        reason = request.POST.get("reason")
 
         req.is_deleted = True
         req.deleted_by_admin = False
+
+        # 🔥 ЗБЕРІГАЄМО ПРИЧИНУ
+        req.delete_reason = reason if reason else None
+
         req.save()
 
     return redirect('my_requests')
+
 # ----------------------------
-# HARD DELETE (FIXED + ADDED)
+# HARD DELETE
 # ----------------------------
 @login_required
 def hard_delete_request(request, id):
@@ -253,19 +268,16 @@ def register(request):
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
 
-        # перевірка паролів
         if password1 != password2:
             return render(request, 'register.html', {
                 'error': 'Паролі не співпадають'
             })
 
-        # перевірка username
         if User.objects.filter(username=username).exists():
             return render(request, 'register.html', {
                 'error': 'Користувач вже існує'
             })
 
-        # створення користувача
         user = User.objects.create_user(
             username=username,
             email=email,
@@ -279,39 +291,68 @@ def register(request):
     return render(request, 'register.html')
 
 
+# ----------------------------
+# CHANGE REQUEST STATUS
+# ----------------------------
+@login_required
 def change_request_status(request, pk):
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
     if request.method == "POST":
+
         req = get_object_or_404(Request, id=pk)
+
         req.status = request.POST.get("status")
         req.save()
 
     return redirect('admin_dashboard')
+
+
 # ----------------------------
 # LOGIN
 # ----------------------------
+
+from django.contrib.auth import login
+from django.contrib.auth.models import User
+
 def login_view(request):
 
-    form = AuthenticationForm(request, data=request.POST or None)
+    error = None
 
     if request.method == 'POST':
 
-        if form.is_valid():
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-            user = form.get_user()
-            login(request, user)
+        try:
+            user_obj = User.objects.get(username=username)
+        except User.DoesNotExist:
+            user_obj = None
 
-            if user.is_superuser:
-                return redirect('admin_dashboard')
-            elif user.is_staff:
-                return redirect('supervisor_dashboard')
+        if user_obj is None:
+            error = "Невірний логін або пароль"
+
+        else:
+            
+            if not user_obj.is_active:
+                error = "Ваш акаунт заблоковано"
             else:
-                return redirect('home')
+                
+                if user_obj.check_password(password):
+                    login(request, user_obj)
 
-    return render(request, 'login.html', {
-        'form': form
-    })
+                    if user_obj.is_superuser:
+                        return redirect('admin_dashboard')
+                    elif user_obj.is_staff:
+                        return redirect('supervisor_dashboard')
+                    else:
+                        return redirect('home')
+                else:
+                    error = "Невірний логін або пароль"
 
-
+    return render(request, 'login.html', {'error': error})
 # ----------------------------
 # LOGOUT
 # ----------------------------
@@ -356,10 +397,10 @@ def supervisor_dashboard(request):
 @login_required
 def edit_request(request, id):
 
-    req = get_object_or_404(Request, id=id)
-
     if not request.user.is_superuser:
         return redirect('home')
+
+    req = get_object_or_404(Request, id=id)
 
     if request.method == 'POST':
 
@@ -374,3 +415,63 @@ def edit_request(request, id):
     return render(request, 'edit_request.html', {
         'req': req
     })
+
+
+# =========================================================
+# USERS ADMIN SYSTEM
+# =========================================================
+
+@login_required
+def users_admin(request):
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    users = User.objects.all().order_by('-date_joined')
+
+    return render(request, 'users_admin.html', {
+        'users': users
+    })
+
+
+@login_required
+def block_user(request, user_id):
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    user = get_object_or_404(User, id=user_id)
+
+    if user != request.user:
+        user.is_active = False
+        user.save()
+
+    return redirect('users_admin')
+
+
+@login_required
+def unblock_user(request, user_id):
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    user = get_object_or_404(User, id=user_id)
+
+    user.is_active = True
+    user.save()
+
+    return redirect('users_admin')
+
+
+@login_required
+def delete_user(request, user_id):
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    user = get_object_or_404(User, id=user_id)
+
+    if user != request.user:
+        user.delete()
+
+    return redirect('users_admin')

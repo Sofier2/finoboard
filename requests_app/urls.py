@@ -21,5 +21,26 @@ urlpatterns = [
     path('restore/<int:id>/',views.restore_request,name='restore_request'),
     path('hard-delete/<int:id>/',views.hard_delete_request,name='hard_delete_request'),
     path('request/<int:pk>/status/', change_request_status, name='change_request_status'),
-    path('users/', views.users, name='users'),
+    path('users/', views.users_admin, name='users_admin'),    path('admin/users/', views.users_admin, name='users_admin'),
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+
+path('users-admin/', views.users_admin, name='users_admin'),
+
+path(
+    'users-admin/block/<int:user_id>/',
+    views.block_user,
+    name='block_user'
+),
+
+path(
+    'users-admin/unblock/<int:user_id>/',
+    views.unblock_user,
+    name='unblock_user'
+),
+
+path(
+    'users-admin/delete/<int:user_id>/',
+    views.delete_user,
+    name='delete_user'
+),
 ]

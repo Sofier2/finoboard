@@ -35,16 +35,16 @@ class Request(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    
+    # soft delete
     is_deleted = models.BooleanField(default=False)
-
-    
     deleted_by_admin = models.BooleanField(default=False)
 
+    # причина видалення
+    delete_reason = models.TextField(blank=True, null=True)
+
     def __str__(self):
-        return f"{self.title} ({self.author})"
-
-
+        return self.title
+    
 class Vote(models.Model):
 
     user = models.ForeignKey(

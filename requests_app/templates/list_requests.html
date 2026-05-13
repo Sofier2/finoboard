@@ -2,143 +2,6 @@
 
 {% block content %}
 
-<style>
-.req-page-header {
-    text-align: center;
-    margin: 40px 0;
-}
-
-.req-page-header h1 {
-    font-size: 36px;
-    margin-bottom: 10px;
-}
-
-.req-subtitle {
-    color: white;
-    max-width: 700px;
-    margin: 0 auto;
-    opacity: 0.9;
-}
-
-.req-filter-bar {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.req-filter-btn {
-    padding: 8px 14px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.05);
-    color: white;
-    text-decoration: none;
-    transition: 0.3s;
-    font-size: 14px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.req-filter-btn:hover {
-    background: rgba(34,197,94,0.2);
-    border-color: #22c55e;
-}
-
-.req-filter-btn.active {
-    color: white;
-}
-
-.req-requests-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 20px 0;
-}
-
-/* CARD */
-.req-card {
-    background: rgba(255,255,255,0.05);
-    padding: 20px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    transition: 0.3s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.req-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-/* HEADER */
-.req-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-}
-
-.req-card-title {
-    font-size: 18px;
-    margin: 0;
-}
-
-/* VOTES */
-.req-votes {
-    background: rgba(34,197,94,0.2);
-    padding: 5px 10px;
-    border-radius: 10px;
-    font-size: 13px;
-    color: #22c55e;
-}
-
-/* META */
-.req-meta {
-    font-size: 13px;
-    color: #cbd5e1;
-    margin-bottom: 10px;
-}
-
-/* BUDGET */
-.req-budget {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #22c55e;
-}
-
-/* DESCRIPTION */
-.req-description {
-    color: white;
-    margin-bottom: 15px;
-    line-height: 1.5;
-}
-
-/* BUTTON */
-.req-btn {
-    display: inline-block;
-    padding: 10px 18px;
-    border-radius: 10px;
-    background: #22c55e;
-    color: white;
-    text-decoration: none;
-    transition: 0.3s;
-    border: none;
-    cursor: pointer;
-}
-
-.req-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(34,197,94,0.3);
-}
-
-.req-empty {
-    text-align: center;
-    color: white;
-    margin-top: 40px;
-}
-</style>
-
 <div class="req-page-header">
     <h1>Заявки громадян</h1>
 
@@ -208,7 +71,15 @@
 
         {% if user.is_authenticated %}
 
-            {% if req.id in voted_requests %}
+            {% if user.is_superuser %}
+
+                <button class="req-btn"
+                        style="background:#374151; cursor:not-allowed;"
+                        disabled>
+                    👑 Адмін не голосує
+                </button>
+
+            {% elif req.id in voted_requests %}
 
                 <button class="req-btn"
                         style="background: gray; cursor: default;"

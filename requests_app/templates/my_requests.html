@@ -3,6 +3,7 @@
 {% block content %}
 
 <style>
+/* ===== SAME STYLES ===== */
 .page-header {
     text-align: center;
     margin: 40px 0;
@@ -28,34 +29,26 @@
     opacity: 0.9;
 }
 
-/* GRID */
 .requests-grid {
     display: flex;
     flex-direction: column;
     gap: 20px;
-
     max-width: 850px;
     margin: 0 auto;
 }
 
-/* CARD */
 .request-card {
     background: rgba(255,255,255,0.05);
     padding: 20px;
     border-radius: 20px;
-
     backdrop-filter: blur(10px);
-
     transition: 0.3s;
-
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
     width: 100%;
 }
 
-/* deleted */
 .request-card.deleted {
     opacity: 0.7;
     filter: grayscale(0.2);
@@ -66,7 +59,6 @@
     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-/* HEADER */
 .request-header {
     display: flex;
     justify-content: space-between;
@@ -80,45 +72,40 @@
     color: white;
 }
 
-/* VOTES */
 .vote {
     background: rgba(34,197,94,0.2);
     padding: 5px 10px;
     border-radius: 10px;
     font-size: 13px;
     color: #22c55e;
-    white-space: nowrap;
 }
 
-/* META */
 .meta {
     font-size: 13px;
     color: #cbd5e1;
     margin-bottom: 10px;
 }
 
-/* BUDGET */
 .budget {
     margin-top: 8px;
     font-size: 14px;
     color: #22c55e;
 }
 
-/* DESCRIPTION */
 .description {
     color: white;
     margin-bottom: 15px;
     line-height: 1.5;
 }
 
-/* ACTIONS */
 .actions {
     margin-top: auto;
     display: flex;
     justify-content: flex-end;
+    gap: 10px;
 }
 
-/* BUTTON */
+/* BUTTONS */
 .delete-btn {
     padding: 8px 12px;
     border-radius: 10px;
@@ -135,7 +122,16 @@
     color: white;
 }
 
-/* STATUS */
+input.reason-input {
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    width: 200px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
 .status {
     margin-top: 14px;
     font-weight: bold;
@@ -150,7 +146,6 @@
     color: #fbbf24;
 }
 
-/* EMPTY */
 .empty {
     text-align: center;
     color: #22c55e;
@@ -161,14 +156,11 @@
 
 <div class="page-header">
     <h1>Мої заявки</h1>
-    <p class="subtitle">
-        Керуйте своїми ініціативами
-    </p>
+    <p class="subtitle">Керуйте своїми ініціативами</p>
 </div>
 
 <div class="info-text">
     Тут зібрані всі ваші подані звернення та ініціативи.
-    Ви можете переглядати їхній статус та активність.
 </div>
 
 <div class="requests-grid">
@@ -180,15 +172,11 @@
         <div>
 
             <div class="request-header">
-
-                <h3 class="request-title">
-                    {{ req.title }}
-                </h3>
+                <h3 class="request-title">{{ req.title }}</h3>
 
                 <div class="vote">
                     Голоси: {{ req.votes }}
                 </div>
-
             </div>
 
             <div class="meta">
@@ -200,57 +188,61 @@
                     💰 Бюджет: {{ req.budget }} грн
                 </div>
             {% endif %}
-<div class="status">
 
-    📌 Статус:
+            <div class="status">
+                📌 Статус:
+                {% if req.status == 'vote' %}
+                    🟡 На голосуванні
+                {% elif req.status == 'review' %}
+                    🟠 На розгляді
+                {% elif req.status == 'approved' %}
+                    🟢 Виділено кошти
+                {% elif req.status == 'implemented' %}
+                    🔵 Реалізовано
+                {% endif %}
+            </div>
 
-    {% if req.status == 'vote' %}
-        🟡 На голосуванні
-    {% elif req.status == 'review' %}
-        🟠 На розгляді
-    {% elif req.status == 'approved' %}
-        🟢 Виділено кошти
-    {% elif req.status == 'implemented' %}
-        🔵 Реалізовано
-    {% endif %}
-
-</div>
-            <p class="description">
-                {{ req.description }}
-            </p>
+            <p class="description">{{ req.description }}</p>
 
             {% if req.is_deleted %}
 
                 {% if req.deleted_by_admin %}
-
                     <div class="status admin">
                         ⚠️ ВИДАЛЕНО АДМІНІСТРАТОРОМ
                     </div>
-
                 {% else %}
-
                     <div class="status user">
                         ⚠️ ВИДАЛЕНО КОРИСТУВАЧЕМ
                     </div>
+                {% endif %}
 
+                {% if req.delete_reason %}
+                    <div class="meta">
+                        📝 Причина: {{ req.delete_reason }}
+                    </div>
                 {% endif %}
 
             {% endif %}
 
         </div>
 
-       
         <div class="actions">
 
             {% if not req.is_deleted %}
 
-                <form method="post"
-                      action="{% url 'delete_request' req.id %}">
+                <!-- 🔥 ФОРМА З ПРИЧИНОЮ -->
+                <form method="post" action="{% url 'delete_request' req.id %}">
                     {% csrf_token %}
+
+                    <input type="text"
+                           name="reason"
+                           placeholder="Причина видалення"
+                           required
+                           class="reason-input">
 
                     <button type="submit"
                             class="delete-btn"
-                            onclick="return confirm('Ви впевнені, що хочете видалити заявку?')">
+                            onclick="return confirm('Ви впевнені?')">
                         Видалити
                     </button>
 
@@ -264,17 +256,10 @@
 
 {% empty %}
 
-    <p class="empty">
-        <b>У вас ще немає заявок.</b>
-    </p>
+    <p class="empty"><b>У вас ще немає заявок.</b></p>
 
 {% endfor %}
 
-</div>
-
-<div class="info-text" style="margin-top:40px;">
-    💡 Порада: активні заявки з великою кількістю голосів
-    мають вищий пріоритет для реалізації.
 </div>
 
 {% endblock %}

@@ -2,108 +2,20 @@
 
 {% block content %}
 
-<style>
-.form-wrapper {
-    max-width: 600px;
-    margin: 60px auto;
-    padding: 40px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 20px;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.form-wrapper h1 {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size: 32px;
-    color: white;
-}
-
-.subtitle {
-    text-align: center;
-    color: white;
-    margin-bottom: 20px;
-}
-
-.info-hint {
-    text-align: center;
-    color: white;
-    font-size: 14px;
-    margin-bottom: 25px;
-    opacity: 0.8;
-    line-height: 1.5;
-}
-
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.form input,
-.form textarea {
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.03);
-    color: white;
-    transition: 0.3s;
-}
-
-.form input:focus,
-.form textarea:focus {
-    outline: none;
-    border: 1px solid #22c55e;
-    box-shadow: 0 0 10px rgba(34,197,94,0.2);
-}
-
-.form textarea {
-    min-height: 120px;
-}
-
-
-.form input[type="number"] {
-    -moz-appearance: textfield;
-}
-
-.form input::-webkit-outer-spin-button,
-.form input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.btn {
-    padding: 14px;
-    border-radius: 12px;
-    border: none;
-    background: #22c55e;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-    font-weight: 500;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(34,197,94,0.3);
-}
-</style>
-
-<div class="form-wrapper">
+<div class="fb-create-form-wrapper">
     <h1>Подати нову заявку</h1>
 
-    <p class="subtitle">
+    <p class="fb-create-subtitle">
         Опишіть вашу ідею, яка може покращити місто або країну.
     </p>
 
-    <div class="info-hint">
+    <div class="fb-create-info-hint">
         💡 Бюджет не є обов’язковим.  
         Ви можете вказати приблизну вартість реалізації проєкту, якщо вона відома.
         Остаточний бюджет визначається після розгляду заявки.
     </div>
 
-    <form method="post" class="form">
+    <form method="post" class="fb-create-form">
         {% csrf_token %}
 
         <input type="text" name="title" placeholder="Назва проєкту" required>
@@ -112,7 +24,7 @@
 
         <input type="number" name="budget" placeholder="Орієнтовний бюджет (грн)">
 
-        <button type="submit" class="btn">Подати заявку</button>
+        <button type="submit" class="fb-create-btn">Подати заявку</button>
     </form>
 </div>
 

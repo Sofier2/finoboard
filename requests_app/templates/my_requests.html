@@ -2,194 +2,42 @@
 
 {% block content %}
 
-<style>
-/* ===== SAME STYLES ===== */
-.page-header {
-    text-align: center;
-    margin: 40px 0;
-}
-
-.page-header h1 {
-    font-size: 32px;
-    padding-bottom: 20px;
-    color: white;
-}
-
-.subtitle {
-    color: white;
-}
-
-.info-text {
-    max-width: 800px;
-    margin: 0 auto 30px;
-    text-align: center;
-    color: white;
-    font-size: 15px;
-    line-height: 1.6;
-    opacity: 0.9;
-}
-
-.requests-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    max-width: 850px;
-    margin: 0 auto;
-}
-
-.request-card {
-    background: rgba(255,255,255,0.05);
-    padding: 20px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    transition: 0.3s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.request-card.deleted {
-    opacity: 0.7;
-    filter: grayscale(0.2);
-}
-
-.request-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-}
-
-.request-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 10px;
-}
-
-.request-title {
-    font-size: 18px;
-    margin: 0;
-    color: white;
-}
-
-.vote {
-    background: rgba(34,197,94,0.2);
-    padding: 5px 10px;
-    border-radius: 10px;
-    font-size: 13px;
-    color: #22c55e;
-}
-
-.meta {
-    font-size: 13px;
-    color: #cbd5e1;
-    margin-bottom: 10px;
-}
-
-.budget {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #22c55e;
-}
-
-.description {
-    color: white;
-    margin-bottom: 15px;
-    line-height: 1.5;
-}
-
-.actions {
-    margin-top: auto;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-/* BUTTONS */
-.delete-btn {
-    padding: 8px 12px;
-    border-radius: 10px;
-    background: rgba(239,68,68,0.2);
-    color: #ef4444;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-    font-weight: bold;
-}
-
-.delete-btn:hover {
-    background: #ef4444;
-    color: white;
-}
-
-input.reason-input {
-    padding: 8px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    width: 200px;
-    background: rgba(255,255,255,0.1);
-    color: white;
-}
-
-.status {
-    margin-top: 14px;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.status.user {
-    color: #fca5a5;
-}
-
-.status.admin {
-    color: #fbbf24;
-}
-
-.empty {
-    text-align: center;
-    color: #22c55e;
-    margin-top: 40px;
-    font-size: 18px;
-}
-</style>
-
-<div class="page-header">
+<div class="myreq-page-header">
     <h1>Мої заявки</h1>
-    <p class="subtitle">Керуйте своїми ініціативами</p>
+    <p class="myreq-subtitle">Керуйте своїми ініціативами</p>
 </div>
 
-<div class="info-text">
+<div class="myreq-info-text">
     Тут зібрані всі ваші подані звернення та ініціативи.
 </div>
 
-<div class="requests-grid">
+<div class="myreq-grid">
 
 {% for req in requests %}
 
-    <div class="request-card {% if req.is_deleted %}deleted{% endif %}">
+    <div class="myreq-card {% if req.is_deleted %}deleted{% endif %}">
 
         <div>
 
-            <div class="request-header">
-                <h3 class="request-title">{{ req.title }}</h3>
+            <div class="myreq-header">
+                <h3 class="myreq-title">{{ req.title }}</h3>
 
-                <div class="vote">
+                <div class="myreq-vote">
                     Голоси: {{ req.votes }}
                 </div>
             </div>
 
-            <div class="meta">
+            <div class="myreq-meta">
                 📅 {{ req.created_at|date:"d.m.Y" }}
             </div>
 
             {% if req.budget %}
-                <div class="budget">
+                <div class="myreq-budget">
                     💰 Бюджет: {{ req.budget }} грн
                 </div>
             {% endif %}
 
-            <div class="status">
+            <div class="myreq-status">
                 📌 Статус:
                 {% if req.status == 'vote' %}
                     🟡 На голосуванні
@@ -202,22 +50,22 @@ input.reason-input {
                 {% endif %}
             </div>
 
-            <p class="description">{{ req.description }}</p>
+            <p class="myreq-description">{{ req.description }}</p>
 
             {% if req.is_deleted %}
 
                 {% if req.deleted_by_admin %}
-                    <div class="status admin">
+                    <div class="myreq-status admin">
                         ⚠️ ВИДАЛЕНО АДМІНІСТРАТОРОМ
                     </div>
                 {% else %}
-                    <div class="status user">
+                    <div class="myreq-status user">
                         ⚠️ ВИДАЛЕНО КОРИСТУВАЧЕМ
                     </div>
                 {% endif %}
 
                 {% if req.delete_reason %}
-                    <div class="meta">
+                    <div class="myreq-meta">
                         📝 Причина: {{ req.delete_reason }}
                     </div>
                 {% endif %}
@@ -226,11 +74,10 @@ input.reason-input {
 
         </div>
 
-        <div class="actions">
+        <div class="myreq-actions">
 
             {% if not req.is_deleted %}
 
-                <!-- 🔥 ФОРМА З ПРИЧИНОЮ -->
                 <form method="post" action="{% url 'delete_request' req.id %}">
                     {% csrf_token %}
 
@@ -238,10 +85,10 @@ input.reason-input {
                            name="reason"
                            placeholder="Причина видалення"
                            required
-                           class="reason-input">
+                           class="myreq-reason-input">
 
                     <button type="submit"
-                            class="delete-btn"
+                            class="myreq-delete-btn"
                             onclick="return confirm('Ви впевнені?')">
                         Видалити
                     </button>
@@ -256,7 +103,7 @@ input.reason-input {
 
 {% empty %}
 
-    <p class="empty"><b>У вас ще немає заявок.</b></p>
+    <p class="myreq-empty"><b>У вас ще немає заявок.</b></p>
 
 {% endfor %}
 

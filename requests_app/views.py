@@ -10,7 +10,8 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from .models import Request, Vote
 import citizen_system.arduino_bridge as bridge
-
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 
 # ----------------------------
 # ADMIN SOFT DELETE
@@ -30,7 +31,7 @@ def admin_delete_request(request, id):
         req.is_deleted = True
         req.deleted_by_admin = True
 
-        # 🔥 ОЦЕ БУЛО ВІДСУТНЄ
+     
         req.delete_reason = reason if reason else None
 
         req.save()
@@ -312,8 +313,6 @@ def change_request_status(request, pk):
 # LOGIN
 # ----------------------------
 
-from django.contrib.auth import login
-from django.contrib.auth.models import User
 
 def login_view(request):
 
